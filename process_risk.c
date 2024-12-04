@@ -1,30 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <pthread.h>
 
 #define THRESHOLD 3
-#define CAPACITY_PROCESS 5
-#define CAPACITY_STORAGE 2
+#define CAPACITY_PROCESS 100 000
+#define CAPACITY_STORAGE 100 000
 
-/*
+
 typedef struct {
     int id;
-    int risk;
-} Tuple;
-
+    float risk;
+} Post;
+/*
 typedef struct {
     Tuple t;
     Node *next;
     Node *prev;
 } Node;
 */
+void pre_process(){
 
-typedef struct Heap {
-    int* array;
-    int size;
-    int capacity;
-} Heap;
-
+}
 // Function to swap two integers
 void swap(int* a, int* b)
 {
@@ -32,6 +29,46 @@ void swap(int* a, int* b)
     *a = *b;
     *b = temp;
 }
+
+Post riskiest_post(int *bot_output){
+    
+    Post riskiest = {0, 0.0};
+    int compteur = 0;
+    int riskiest_compteur = 0;
+    
+    while (bot_output != NULL){
+        if  (bot_output[compteur][1] > riskiest[1]){
+            riskiest = bot_output[compteur][1];
+            riskiest_compteur = compteur;
+        }
+        // Enhance the next searches by doing sliding the riskiest to the beginning of the array as we go through the posts
+        if (compteur > 1 && bot_output[compteur][1] > bot_output[compteur-1][1]){
+            swap(bot_output[compteur], bot_output[compteur - 1]);
+        }
+        ++compteur;
+    }
+    swap(bot_output[riskiest_compteur], bot_output[compteur]); // Assuming that compteur is at the end of the list at the end of the iteration 
+    
+    return riskiest;
+}
+
+void processing_post(Heap* heap, int* processed){
+    
+    int processing_power = 4;
+    
+    while (true){
+        wait(processing_power);
+        extractMax(heap);
+    }
+
+}
+
+typedef struct Heap {
+    int* array;
+    int size;
+    int capacity;
+} Heap;
+
 
 // Function to create a heap
 Heap* createHeap(int capacity)
@@ -83,6 +120,7 @@ void insertHeap(Heap* heap, int value)
         i = (i - 1) / 2;
     }
 }
+
 // Function to extract the root (maximum element)
 int extractMax(Heap* heap)
 {
@@ -110,19 +148,31 @@ void printHeap(Heap* heap)
     printf("\n");
 }
 
-/*
-void riskiest_post(Node *bot_output){
-
-}*/
 
 int main(int argc, char *argv[]) {
-    Heap* heap = createHeap(10);
-    insertHeap(heap, 3);
-    insertHeap(heap, 2);
-    insertHeap(heap, 15);
-    insertHeap(heap, 5);
-    insertHeap(heap, 4);
-    insertHeap(heap, 45);
+    
+    Heap* heap = createHeap(CAPACITY_PROCESS);
+    
+    // Gerer les ajouts de post et les process de post en meme temps -> multi-threading
+    
+    pthread_t get;
+    pthread_t process;
+
+    pthread_create(get, NULL);
+    pthread_create(process, NULL);
+
+    while (bot_output != NULL){
+    
+    Tuple riskiest = riskiest_post(bot_output);
+    
+    if (heap->size == heap->capacity){
+       find lowest of the heap
+       swap(riskiest, );
+    }
+    } else {
+        insertHeap(heap, riskiest);
+    }
+    }
 
     printf("Max Heap array: ");
     printHeap(heap);
@@ -135,5 +185,3 @@ int main(int argc, char *argv[]) {
     free(heap->array);
     free(heap);
 }
-
-

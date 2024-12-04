@@ -1,0 +1,7 @@
+{
+    "Posts":[
+        {"id":"1", "risk_level":"0,3"},
+        {"id":"2", "risk_level":"0.2"},
+        {"id":"3", "risk_level":"0.1"}
+    ]
+}
